@@ -28,19 +28,19 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: satheesan240291
-          password: 1q2w3e4r5t
+          username: ashleylionell
+          password: glorylass
 
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: satheesan240291/eqapp:latest
+          tags: ashleylionell/eqapp:latest
 
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: ./db
           push: true
-          tags: satheesan240291/eqdb:latest
+          tags: ashleylionell/eqdb:latest
