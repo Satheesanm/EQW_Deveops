@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      CONNECTION_STRING: postgres://${LOCAL_USER}:${LOCAL_PWD}@db:${DB_PORT}/${DB_NAME}
+      APP_PORT: ${APP_PORT}
+    ports:
+      - ${APP_PORT}:${APP_INTERNAL_PORT}
+  db:
+    #    image: postgres:14
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: ${LOCAL_USER}
+      POSTGRES_PASSWORD: ${LOCAL_PWD}
+      POSTGRES_DB: ${DB_NAME}
+    #      REMOTE_PWD: ${REMOTE_PWD}
+    #      PGPASSFILE: .pgpass
+    volumes:
+      - data:/var/lib/postgresql/data
+    #      - ./db/init:/docker-entrypoint-initdb.d/
+    ports:
+      - 3000:${DB_PORT}
+    restart: always
+volumes:
+  data: { }

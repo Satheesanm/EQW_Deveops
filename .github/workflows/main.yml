@@ -1,0 +1,46 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+#      - uses: actions/setup-node@v2
+      - name: Checkout
+        run: |
+          npm install
+          docker compose build --no-cache
+          docker compose up -d
+
+      - name: Check build status
+        run: |
+          curl --version
+          sleep 20
+          curl --connect-timeout 5 --max-time 10 --retry 10 --retry-max-time 60 --retry-connrefused http://localhost:5555
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ashleylionell
+          password: glorylass
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ashleylionell/eqapp:latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./db
+          push: true
+          tags: ashleylionell/eqdb:latest
